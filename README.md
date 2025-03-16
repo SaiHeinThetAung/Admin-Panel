@@ -45,31 +45,9 @@ Before running the project, ensure you have the following installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/admin-panel.git
+git clone https://github.com/SaiHeinThetAung/admin-panel.git
 cd admin-panel
 ```
-
-Replace `your-username` with your GitHub username or the repository URL.
-
-### 2. Configure Environment Variables
-The project uses environment variables defined in `docker-compose.yml`. No `.env` file is required, as sensitive values are set directly in the Compose file. However, you should review and customize these values:
-
-- Open `docker-compose.yml` and update the following under the `backend` and `db` services:
-  ```yaml
-  backend:
-    environment:
-      - DB_PASSWORD=root           # Change to a secure password
-      - JWT_SECRET=your_secret_key # Replace with a strong secret (e.g., 32+ random characters)
-  db:
-    environment:
-      - MYSQL_ROOT_PASSWORD=root   # Must match DB_PASSWORD above
-      - MYSQL_DATABASE=admin_panel # Database name (default: admin_panel)
-  ```
-
-  **Recommended**:
-  - `DB_PASSWORD`/`MYSQL_ROOT_PASSWORD`: Use a strong password (e.g., `MySecurePass123!`).
-  - `JWT_SECRET`: Generate a random key (e.g., `openssl rand -hex 32` in terminal).
-
 ### 3. Build and Run with Docker Compose
 Run the following command in the root directory (`admin-panel/`):
 ```bash
@@ -80,16 +58,16 @@ docker-compose up --build
 - The backend initializes the `users` table in the `admin_panel` database and seeds it with an admin user:
   - Username: `admin`
   - Email: `admin@example.com`
-  - Password: `admin123`
+  - Password: `password`
   - Role: `admin`
 
 Wait until you see logs indicating the services are running:
 - Backend: `Server running on port 5005`
-- Frontend: Served via Nginx on port 80
+- Frontend: Served via Nginx on port 3001
 - MySQL: Ready when healthcheck passes
 
 ### 4. Access the Application
-- **Frontend**: Open `http://localhost` in your browser to view the dashboard.
+- **Frontend**: Open `http://localhost:3001` in your browser to view the dashboard.
 - **Backend API**: Access `http://localhost:5005/api/users` to verify the seeded user (use a tool like Postman or curl).
 - **MySQL**: Optionally connect to `localhost:3306` with a MySQL client (e.g., MySQL Workbench) using `root`/`root` (or your updated password).
 
