@@ -1,7 +1,36 @@
 const { pool } = require('../config/db');
+const mysql = require('mysql2/promise'); // Import mysql2/promise for initial connection
 const bcrypt = require('bcryptjs');
 
 class User {
+    static async initializeDatabase() {
+        // Create a temporary connection without specifying a database
+        const connection = await mysql.createConnection({
+            host: process.env.DB_HOST || 'db',
+            user: process.env.DB_USER || 'root',
+            password: process.env.DB_PASSWORD || 'root',
+            port: process.env.DB_PORT || 3306,
+        });
+
+        try {
+            // Create the database if it doesn’t exist
+            const dbName = process.env.DB_NAME || 'admin_panel';
+            await connection.query(`CREATE DATABASE IF NOT EXISTS ${dbName}`);
+            console.log(`Database '${dbName}' ensured`);
+
+            // Switch to the database (pool will use it from config)
+            await connection.query(`USE ${dbName}`);
+        } catch (error) {
+            console.error('Error creating database:', error.message);
+            throw error;
+        } finally {
+            await connection.end();
+        }
+
+        // Now create the table and admin user using the pool
+        await this.createTable();
+    }
+
     static async createTable() {
         const query = `
             CREATE TABLE IF NOT EXISTS users (
@@ -14,8 +43,14 @@ class User {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
-        await pool.execute(query);
-        await this.createAdminUser();
+        try {
+            await pool.execute(query);
+            console.log('Users table created or already exists');
+            await this.createAdminUser();
+        } catch (error) {
+            console.error('Error creating users table:', error.message);
+            throw error;
+        }
     }
 
     static async createAdminUser() {
@@ -29,6 +64,8 @@ class User {
                 role: 'admin'
             });
             console.log('Admin user created');
+        } else {
+            console.log('Admin user already exists');
         }
     }
 
@@ -50,7 +87,7 @@ class User {
             return rows[0];
         } catch (error) {
             console.error('Error in findById:', error.message);
-            throw error; // Let the route handle the error
+            throw error;
         }
     }
 
@@ -119,3 +156,9 @@ class User {
 }
 
 module.exports = User;
+
+// Initialize the database and table on module load
+User.initializeDatabase().catch((err) => {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
+});
