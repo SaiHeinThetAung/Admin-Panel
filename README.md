@@ -1,6 +1,3 @@
-Below is a well-structured `README.md` for your Git repository, designed to help others set up and run your project using Docker. It includes prerequisites, setup instructions, and usage details based on your backend (`express-api`) and frontend (`express-ui`) setup with MySQL, as well as the Docker Compose configuration we’ve established.
-
----
 
 # Admin Panel Project
 
