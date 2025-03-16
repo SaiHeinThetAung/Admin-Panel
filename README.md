@@ -76,7 +76,7 @@ curl http://localhost:5005/api/users
 ---
 
 ## Usage
-- **Login**: Use the seeded admin credentials (`admin@example.com`/`password`) to log in.
+- **Login**: Use the seeded admin credentials (`email=admin@example.com`/`password=password`) to log in.
 - **Admin Features**: Manage users (edit, ban, delete) via the dashboard.
 - **User Features**: Non-admin users see a profile view.
 
