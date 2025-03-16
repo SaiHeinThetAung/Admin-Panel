@@ -23,8 +23,8 @@ app.use(express.json());
 // Connect to Database and Initialize Tables
 const initializeApp = async () => {
     try {
-        await connectDB(); // Connect to MySQL
-        await User.createTable(); // Create the users table if it doesn’t exist
+        await connectDB(); // Connect to MySQL and create database
+        await User.createTable(); // Create the users table and seed admin
         console.log('Database and tables initialized successfully');
     } catch (error) {
         console.error('Initialization failed:', error);
@@ -39,7 +39,7 @@ initializeApp();
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-const PORT = process.env.PORT || 5005; // Changed to match your output (5005)
+const PORT = process.env.PORT || 5005;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

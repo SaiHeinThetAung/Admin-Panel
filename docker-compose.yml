@@ -13,11 +13,11 @@ services:
       - DB_USER=root
       - DB_PASSWORD=root
       - DB_NAME=admin_panel
-      - DB_PORT=3306
       - JWT_SECRET=your_secret_key
+      - PORT=5005
     depends_on:
       db:
-        condition: service_healthy # Wait for MySQL to be healthy
+        condition: service_healthy
     networks:
       - app-network
 
@@ -39,16 +39,16 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=root
+      - MYSQL_DATABASE=admin_panel
     ports:
-      - "3306:3306" # Optional for local access
+      - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
     networks:
       - app-network
 
